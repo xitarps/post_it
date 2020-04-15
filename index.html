@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Kalam" rel="stylesheet">
+
+    <style>
+        body,
+        html,
+        p,
+        h1,
+        h2 {
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        p,
+        h1,
+        h2 {
+            color: #000000;
+            text-shadow: 0.1em 0.1em #ffffff;
+        }
+
+
+        h1,
+        h2 {
+            font-family: 'Pacifico', cursive;
+        }
+
+        p {
+            font-family: 'Kalam', cursive;
+        }
+
+        body {
+
+            background-image: linear-gradient(-25deg, #002147, #93b5db)
+        }
+
+
+        #container {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 3em;
+            flex-wrap: wrap;
+
+        }
+
+        @media only screen and (min-width: 1200px) {
+            .postIt {
+                display: flex;
+                background-color: #fcec0c;
+                flex-flow: column;
+                align-items: center;
+                min-width: 25%;
+                max-width: 25%;
+
+                padding: 0.5em;
+
+                margin-bottom: 3em;
+
+                position: relative;
+
+            }
+        }
+
+        @media only screen and (min-width: 500px) and (max-width: 1200px) {
+            .postIt {
+                display: flex;
+                background-color: #fcec0c;
+                flex-flow: column;
+                align-items: center;
+                min-width: 40%;
+                max-width: 40%;
+
+                padding: 0.5em;
+
+                margin-bottom: 3em;
+
+                position: relative;
+
+            }
+        }
+
+        @media only screen and (max-width: 500px) {
+            .postIt {
+                display: flex;
+                background-color: #fcec0c;
+                flex-flow: column;
+                align-items: center;
+                min-width: 90%;
+                max-width: 90%;
+
+                padding: 0.5em;
+
+                margin-bottom: 3em;
+
+                position: relative;
+
+            }
+        }
+
+        .postIt::before {
+
+            position: absolute;
+
+            content: "";
+            background-color: black;
+            bottom: 0.5em;
+            width: 96%;
+            height: 40%;
+            box-shadow: 0em 0.5em 0.2em 0.2em rgba(0, 0, 0, 0.50);
+            z-index: -1;
+            transform: rotate(2deg);
+
+            transition: 1s;
+        }
+
+        h1 {
+            margin: 0.2em;
+            padding: 0.5em 0em 0.2em 0em;
+        }
+
+        h2 {
+            margin: 0.2em;
+
+        }
+
+        p {
+            margin-bottom: 1.5em;
+            padding: 0.5em 2em 0.2em 2em;
+            white-space: pre-line;
+        }
+
+        .invisivel {
+            opacity: 0;
+            transition: opacity 2s;
+        }
+
+        #section {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        #getDados {
+            margin: 0;
+            padding: 0;
+            width: 1.5em;
+            height: 1.5em;
+            font-size: 3em;
+            text-align: center;
+            line-height: 1.2em;
+            background-color: rgb(255, 251, 0);
+            color: rgb(0, 0, 0);
+            border-radius: 0 50% 50% 50%;
+            box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.50);
+            transition: 0.2s;
+        }
+
+        #getDados:active {
+            background-color: rgb(165, 162, 0);
+            box-shadow: 0 0 8px 8px rgb(0, 0, 0, 0.50);
+            width: 1.45em;
+            height: 1.45em;
+            font-size: 2.6em;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="section">
+        <div id="getDados"> ✍</div>
+    </div>
+    <div id="container">
+        <!--
+<div class="postIt">
+<h1>Titulo</h1>
+<h2>Sub-titulo</h2>
+<p>
+Vamos escrever um pouco de texto aqui.
+Se você não se incomoda, poderia tentar ler meu código?
+</p>
+</div>
+
+-->
+    </div>
+
+
+
+    <script>
+
+        let db = { 'listaDePostIts': [] };
+        let quantidadePosts = 0;
+        let existeDB = localStorage.getItem('postItDB');
+        if (existeDB) {
+            db = JSON.parse(localStorage.getItem("postItDB"));
+            quantidadePosts = db.listaDePostIts.length;
+
+            for (let index = 0; index < quantidadePosts; index++) {
+
+                let postAtualRodando = JSON.parse(db.listaDePostIts[index]);
+
+                let postItdinamico = document.createElement("div");
+                postItdinamico.className = "postIt";
+                postItdinamico.id = "postID_" + postAtualRodando.id;
+
+                let h1 = document.createElement("h1");
+                let h2 = document.createElement("h2");
+                let p = document.createElement("p");
+
+                h1.innerHTML = postAtualRodando.h1;
+                h2.innerHTML = postAtualRodando.h2;
+                p.innerHTML = postAtualRodando.p;
+
+                let close = h1.querySelector("span");
+
+                postItdinamico.appendChild(h1);
+                postItdinamico.appendChild(h2);
+                postItdinamico.appendChild(p);
+
+                close.addEventListener("click", e => {
+
+                    let newTemp = document.querySelector("#postID_" + postAtualRodando.id);
+
+                    //newTemp.classList.add("invisivel");
+
+                    setTimeout(() => {
+                        newTemp.parentElement.removeChild(newTemp);
+
+
+                        apagarDoBD(postAtualRodando.id);
+                    }, 200)
+
+
+
+                });
+
+                document.querySelector("#container").appendChild(postItdinamico);
+
+            }
+
+        } else {
+            localStorage.setItem("postItDB", JSON.stringify(db));
+        }
+
+        function apagarDoBD(id) {
+            console.log("apagando")
+            console.log(db.listaDePostIts);
+
+
+            for (var i = 0; i <= db.listaDePostIts.length; i++) {
+                var itemtoBeRemoved = JSON.parse(db.listaDePostIts[i]);
+
+
+                if (itemtoBeRemoved.id == id) {
+                    console.log("quero tirar", itemtoBeRemoved);
+                    db.listaDePostIts.splice(i, 1);
+                    console.log(id)
+                    //console.log("slice",db.listaDePostIts.slice(i));
+                    break;
+                }
+            }
+
+            console.log(db.listaDePostIts);
+
+            localStorage.setItem("postItDB", JSON.stringify(db));
+        }
+
+        function createPost(x) {
+
+            let postItTemp = {
+                id: x.id,
+                h1: x.h1.innerHTML,
+                h2: x.h2.innerHTML,
+                p: x.p.innerHTML
+            }
+
+            db.listaDePostIts.push(JSON.stringify(postItTemp));
+
+            localStorage.setItem("postItDB", JSON.stringify(db));
+
+        }
+
+        let botao = document.querySelector("#getDados");
+
+
+        let novoID;
+        let novoH1;
+        let novoH2;
+        let novoP;
+        let novoSpan;
+
+        botao.addEventListener("click", e => {
+            e.preventDefault();
+
+            setTimeout(() => {
+
+                let ultimoId = quantidadePosts;
+
+                addNewPostIt(ultimoId);
+
+                let novoPost = {
+                    "id": novoID,
+                    "h1": novoH1,
+                    "h2": novoH2,
+                    "p": novoP,
+                };
+
+                createPost(novoPost);
+
+            }, 300);
+
+
+        })
+
+
+
+        function addNewPostIt(id) {
+            let containerFromPage = document.querySelector("#container");
+
+
+            let titulo = prompt('Digite um título');
+            let subTitulo = prompt('Digite um subtitulo');
+            let text = prompt('Digite conteudo do post-it');
+
+            let close = document.createElement("span");
+            close.innerHTML = "❌";
+
+
+
+            let postItNew = document.createElement("div");
+
+            postItNew.classList.add("postIt");
+            postItNew.id = "postID_" + id;
+            quantidadePosts++;
+
+
+
+            let h1 = document.createElement("h1");
+            titulo ? h1.innerHTML = titulo : h1.innerHTML = "Sem Título";
+
+            let h2 = document.createElement("h2");
+            subTitulo ? h2.innerHTML = subTitulo : h2.innerHTML = "Sem sub-título";
+
+            let p = document.createElement("p");
+            text ? p.innerHTML = text : p.innerHTML = "Sem Conteudo";
+
+            close.addEventListener("click", e => {
+
+                let newTemp = document.querySelector("#postID_" + id);
+
+
+                //newTemp.classList.add("invisivel");
+
+                setTimeout(() => {
+                    newTemp.parentElement.removeChild(newTemp);
+
+                    apagarDoBD(id);
+
+                }, 200)
+
+
+
+            });
+
+            postItNew.appendChild(h1).appendChild(close);
+            postItNew.appendChild(h2);
+            postItNew.appendChild(p);
+
+            containerFromPage.appendChild(postItNew);
+
+            novoID = id;
+            novoH1 = h1;
+            novoH2 = h2;
+            novoP = p;
+
+
+        }
+
+    </script>
+
+</body>
+
+</html>
